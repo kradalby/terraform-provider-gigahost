@@ -1,0 +1,7 @@
+/terraform-provider-gigahost
+/terraform-provider-gigahost_*
+/dist/
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
