@@ -4,17 +4,33 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    flake-checks.url = "github:kradalby/flake-checks";
+    flake-checks.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     { nixpkgs
     , flake-utils
+    , flake-checks
     , ...
     }:
     flake-utils.lib.eachDefaultSystem
       (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        fc = flake-checks.lib;
+
+        # The Go build/test checks are intentionally NOT exposed: go.mod imports
+        # the PRIVATE github.com/kradalby/gigahost-go, which a hermetic nix
+        # sandbox cannot fetch. Only the pure formatting check is wired up.
+        common = {
+          inherit pkgs;
+          root = ./.;
+          pname = "terraform-provider-gigahost";
+          version = "0.0.1";
+          vendorHash = null;
+          goPkg = pkgs.go_1_26;
+        };
 
         deps = with pkgs; [
           go_1_26
@@ -35,6 +51,12 @@
           };
       in
       {
+        formatter = fc.formatter common;
+
+        checks = {
+          formatting = fc.goFormat common;
+        };
+
         devShells.default = pkgs.mkShell { buildInputs = deps; };
 
         apps = {
