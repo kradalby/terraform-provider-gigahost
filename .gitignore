@@ -5,3 +5,6 @@
 *.tfstate.backup
 .terraform/
 .terraform.lock.hcl
+
+# local scratch workspace (NixOS experiments)
+.work-nixos/

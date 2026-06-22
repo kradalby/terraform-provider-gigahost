@@ -1,0 +1,31 @@
+# Generated for host ${hostname}. Copy into your flake's machines/${hostname}/.
+# Disko-free: disko only partitions at first install. Pairs disk + the static
+# network Gigahost assigned this box (no DHCP, so it must be declared).
+{ modulesPath, ... }:
+{
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda"; # BIOS / MBR
+
+  boot.initrd.availableKernelModules = [ "virtio_pci" "virtio_scsi" "ahci" "sd_mod" ];
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-partlabel/disk-main-root";
+    fsType = "ext4";
+    autoResize = true; # grow ext4 after the partition grows
+  };
+  boot.growPartition = true; # extend the partition into a resized disk on boot
+
+  nixpkgs.hostPlatform = "x86_64-linux";
+
+  networking = {
+    hostName = "${hostname}";
+    useDHCP = false;
+    interfaces.${interface}.ipv4.addresses = [ { address = "${ipv4}"; prefixLength = ${ipv4_prefix}; } ];
+    interfaces.${interface}.ipv6.addresses = [ { address = "${ipv6}"; prefixLength = ${ipv6_prefix}; } ];
+    defaultGateway = { address = "${ipv4_gw}"; interface = "${interface}"; };
+    defaultGateway6 = { address = "${ipv6_gw}"; interface = "${interface}"; };
+    nameservers = [ "1.1.1.1" "1.0.0.1" ];
+  };
+}
