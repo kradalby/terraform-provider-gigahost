@@ -157,8 +157,8 @@
             # `go get @<sha>` resolves back to a tag when the commit carries
             # one, which would record a version instead of the pseudo-version
             # this repo's whole versioning story depends on.
-            if [ -n "$(git -C "$tmp/gigahost-go" tag --points-at "$sha")" ]; then
-              echo "gigahost-go $sha is tagged; it must stay untagged so go.mod records a pseudo-version" >&2
+            if git -C "$tmp/gigahost-go" tag --points-at "$sha" | grep -qE '^v[0-9]'; then
+              echo "gigahost-go $sha carries a vX.Y.Z tag; go.mod would record that version instead of a pseudo-version" >&2
               exit 1
             fi
             sub="$tmp/gigahost-go/terraform-provider-gigahost"

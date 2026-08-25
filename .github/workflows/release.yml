@@ -3,10 +3,17 @@ name: release
 on:
   push:
     tags:
-      - "v*"
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 permissions:
   contents: write
+
+# Never cancel a release, and never run two: goreleaser races on the same
+# GitHub release and asset uploads, and a half-uploaded release is what the
+# registries would ingest.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   goreleaser:
@@ -17,6 +24,14 @@ jobs:
         with:
           fetch-depth: 0
 
+
+      - name: Tag must be on main
+        # A tag pushed from a feature branch would publish unreviewed code,
+        # and neither registry accepts a re-upload of a version.
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "${GITHUB_SHA}" origin/main \
+            || { echo "::error::tag ${GITHUB_REF_NAME} is not on main"; exit 1; }
 
       - name: Install Nix
         uses: NixOS/nix-installer-action@6b8548fe06acfb0155a50ab5d561accb215764cc # main
