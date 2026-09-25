@@ -45,7 +45,7 @@
         ];
 
         mkApp =
-          name: text:
+          name: description: text:
           flake-utils.lib.mkApp {
             drv = pkgs.writeShellScriptBin name ''
               set -euo pipefail
@@ -56,6 +56,9 @@
               export GOTOOLCHAIN=local
               ${text}
             '';
+          }
+          // {
+            meta.description = description;
           };
       in
       {
@@ -102,7 +105,7 @@
           # docs/ and examples/ here are generated artefacts, replaced
           # wholesale from the pinned checkout; gigahost-go is the only place
           # to edit them.
-          bump = mkApp "bump" ''
+          bump = mkApp "bump" "Pin gigahost-go, regenerate docs, commit and tag a release" ''
             version="''${1:?usage: nix run .#bump -- vX.Y.Z [gigahost-go-ref]}"
             ref="''${2:-main}"
 
@@ -210,7 +213,7 @@
 
           # Signing is exercised only in CI at real releases, where the GPG
           # secrets live.
-          snapshot = mkApp "snapshot" ''
+          snapshot = mkApp "snapshot" "Build an unsigned goreleaser snapshot" ''
             goreleaser release --snapshot --clean --skip=sign
           '';
         };
