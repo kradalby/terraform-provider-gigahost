@@ -21,20 +21,7 @@
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ] (
       system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            (_: prev: {
-              # goimports ships wrapped with a `go` on PATH. That `go` must be
-              # at least the go.mod directive, or GOTOOLCHAIN=auto tries to
-              # fetch a toolchain from inside the network-less treefmt sandbox.
-              gotools = prev.gotools.override {
-                buildGoModule = prev.buildGoLatestModule;
-                go = prev.go_latest;
-              };
-            })
-          ];
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
         fc = flake-checks.lib;
 
         # The Go build/test checks are intentionally NOT exposed: go.mod imports
