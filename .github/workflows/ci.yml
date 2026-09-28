@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# The nix check gates run in a hermetic sandbox, so they cover only what needs
+# no network: formatting. Everything that needs the pinned gigahost-go (build,
+# tests, docs) runs outside the sandbox.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        uses: NixOS/nix-installer-action@62c1943b776c509394b550f3f983adc14e9212d6 # v1.0.0
+
+      - name: Setup Nix cache (hestia)
+        uses: Mic92/hestia@dfed9ced335d28978ba74e513939a10db1f71025 # v3.1.0
+
+      - name: formatting
+        run: nix build -L .#checks.x86_64-linux.formatting
+
+  build:
+    name: shim compiles against the pinned gigahost-go
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        uses: NixOS/nix-installer-action@62c1943b776c509394b550f3f983adc14e9212d6 # v1.0.0
+
+      - name: Setup Nix cache (hestia)
+        uses: Mic92/hestia@dfed9ced335d28978ba74e513939a10db1f71025 # v3.1.0
+
+      # The whole point of this repository is that it builds. If the pinned
+      # gigahost-go commit no longer satisfies the shim, the release is what
+      # would otherwise discover it.
+      - name: go build
+        run: nix develop --command -- go build ./...
+
+      - name: go vet
+        run: nix develop --command -- go vet ./...
+
+      - name: go test
+        run: nix develop --command -- go test ./...
+
+  docs:
+    name: docs match the pinned provider schema
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        uses: NixOS/nix-installer-action@62c1943b776c509394b550f3f983adc14e9212d6 # v1.0.0
+
+      - name: Setup Nix cache (hestia)
+        uses: Mic92/hestia@dfed9ced335d28978ba74e513939a10db1f71025 # v3.1.0
+
+      # These files are what the registry renders as Example Usage.
+      - name: tofu fmt
+        run: nix develop --command -- tofu fmt -check -recursive examples
+
+      - name: docs are regenerated
+        run: |
+          nix run .#docs
+          # status, not diff: a doc for a new resource is untracked.
+          if [ -n "$(git status --porcelain -- docs)" ]; then
+            git status --short -- docs
+            echo "::error::docs/ is stale; run 'nix run .#docs' and commit the result"
+            exit 1
+          fi

@@ -1,0 +1,12 @@
+version: 2
+
+updates:
+  # go.mod is owned by `nix run .#bump`, which pins gigahost-go by commit and
+  # runs `go mod tidy` — so the module graph is deliberately not managed here.
+  # The actions are, because nothing else updates them.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci"
