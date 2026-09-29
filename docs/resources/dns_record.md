@@ -42,7 +42,7 @@ resource "gigahost_dns_record" "mx" {
 ### Required
 
 - `type` (String) Record type (A, AAAA, CNAME, MX, TXT, NS, …).
-- `value` (String) Record value. For hostname-valued types (CNAME, MX, NS, SRV, PTR) the API returns the target with a trailing dot; if your configured value differs only by that dot the state keeps your form, so omitting the dot does not produce a perpetual diff. For TXT (and other content-valued types) the trailing dot is significant and is preserved verbatim.
+- `value` (String) Record value. For hostname-valued types (CNAME, MX, NS, SRV, PTR) the API returns the target with a trailing dot; if your configured value differs only by that dot the state keeps your form, so omitting the dot does not produce a perpetual diff. For TXT (and other content-valued types) the trailing dot is significant and is preserved verbatim. A and AAAA values compare as addresses, so `2001:db8:1:2:3:4::5` and `2001:db8:1:2:3:4:0:5` are the same record.
 - `zone_id` (String) ID of the containing zone.
 
 ### Optional
