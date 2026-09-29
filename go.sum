@@ -99,8 +99,8 @@ github.com/knadh/koanf/providers/file v1.2.1 h1:bEWbtQwYrA+W2DtdBrQWyXqJaJSG3KrP
 github.com/knadh/koanf/providers/file v1.2.1/go.mod h1:bp1PM5f83Q+TOUu10J/0ApLBd9uIzg+n9UgthfY+nRA=
 github.com/knadh/koanf/v2 v2.3.7 h1:amceufOeoQcq6VFKjm7/ggJ3t0Dkqaxy5fza4j3YgTA=
 github.com/knadh/koanf/v2 v2.3.7/go.mod h1:gRb40VRAbd4iJMYYD5IxZ6hfuopFcXBpc9bbQpZwo28=
-github.com/kradalby/gigahost-go v0.0.0-20260928123036-b06cebf60af6 h1:WDbtR5D1gzbH7QDkI1e5mp6kS7GsddQIQ58jbysIWJo=
-github.com/kradalby/gigahost-go v0.0.0-20260928123036-b06cebf60af6/go.mod h1:NDEcDFd09AblPfv+xeK8zOazS9UzdJ1cbONJRCnNXHA=
+github.com/kradalby/gigahost-go v0.0.0-20260929120825-1e582de205d4 h1:SfO1N8igsCOGp3WprYtqwkm0NACMnijMZVRLekUES5A=
+github.com/kradalby/gigahost-go v0.0.0-20260929120825-1e582de205d4/go.mod h1:NDEcDFd09AblPfv+xeK8zOazS9UzdJ1cbONJRCnNXHA=
 github.com/mattn/go-colorable v0.1.9/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
 github.com/mattn/go-colorable v0.1.12/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb520KVy5xxl4=
 github.com/mattn/go-colorable v0.1.15 h1:+u9SLTRGnXv73cEsnsmoZBom+dMU88B2M0aDcWy0/jY=
