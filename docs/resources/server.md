@@ -3,12 +3,12 @@
 page_title: "gigahost_server Resource - Gigahost"
 subcategory: ""
 description: |-
-  Deploys an hourly-billed cloud server, selected by slugs: type + size (+ optional region) and one of os, iso, or rescue. Slugs resolve against the live catalog at create time — list them with gigahost deploy types|sizes|regions|os or the gigahost_server_size/gigahost_operating_system data sources. Changing os reinstalls the server in place (same ID and IP, disk wiped, SSH keys not re-injected); every other input change replaces the server. Destroying the resource cancels the server and stops billing.
+  Deploys an hourly-billed cloud server, selected by slugs: type + size (+ optional region) and one of os, iso, or rescue. Slugs resolve against the live catalog at create time — list them with gigahost deploy types|sizes|regions|os or the gigahost_server_size/gigahost_operating_system data sources. Changing os reinstalls the server in place (same ID and IP, disk wiped, ssh_keys re-authorized); every other input change replaces the server. Destroying the resource cancels the server and stops billing.
 ---
 
 # gigahost_server (Resource)
 
-Deploys an hourly-billed cloud server, selected by slugs: `type` + `size` (+ optional `region`) and one of `os`, `iso`, or `rescue`. Slugs resolve against the live catalog at create time — list them with `gigahost deploy types|sizes|regions|os` or the `gigahost_server_size`/`gigahost_operating_system` data sources. Changing `os` **reinstalls the server in place** (same ID and IP, **disk wiped**, SSH keys not re-injected); every other input change replaces the server. Destroying the resource cancels the server and stops billing.
+Deploys an hourly-billed cloud server, selected by slugs: `type` + `size` (+ optional `region`) and one of `os`, `iso`, or `rescue`. Slugs resolve against the live catalog at create time — list them with `gigahost deploy types|sizes|regions|os` or the `gigahost_server_size`/`gigahost_operating_system` data sources. Changing `os` **reinstalls the server in place** (same ID and IP, **disk wiped**, `ssh_keys` re-authorized); every other input change replaces the server. Destroying the resource cancels the server and stops billing.
 
 ## Example Usage
 
@@ -55,7 +55,7 @@ resource "gigahost_server_rdns" "web" {
 - `backups` (Boolean) Enable backups for the server.
 - `hostname` (String) Hostname for the new server.
 - `iso` (String) Uploaded ISO to boot, by name (list with `gigahost deploy isos`). Exactly one of `os`, `iso`, or `rescue`.
-- `os` (String) Operating system slug, e.g. `debian-12` (list with `gigahost deploy os`; codenames like `bookworm` also resolve). Exactly one of `os`, `iso`, or `rescue`. Changing this between two OS slugs **reinstalls the server in place**: the ID and IP are kept, but **the disk is wiped** and SSH keys are not re-injected. Transitions involving `iso` or `rescue` replace the server.
+- `os` (String) Operating system slug, e.g. `debian-12` (list with `gigahost deploy os`; codenames like `bookworm` also resolve). Exactly one of `os`, `iso`, or `rescue`. Changing this between two OS slugs **reinstalls the server in place**: the ID and IP are kept, **the disk is wiped** and `ssh_keys` are authorized again. Transitions involving `iso` or `rescue` replace the server.
 - `platform` (String) Platform: `cloud` (default). `metal` exists in the catalog but is not yet deployable through this resource.
 - `region` (String) Region slug, e.g. `sfj` (list with `gigahost deploy regions`). Optional while the chosen size is offered in exactly one region — that region is used automatically and recorded here.
 - `rescue` (Boolean) Boot into rescue mode. Exactly one of `os`, `iso`, or `rescue`.
