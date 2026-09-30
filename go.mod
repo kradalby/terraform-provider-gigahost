@@ -4,7 +4,7 @@ go 1.27
 
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
-	github.com/kradalby/gigahost-go v0.0.0-20260929144135-9fe0170e4545
+	github.com/kradalby/gigahost-go v0.0.0-20260930190452-4395e8c61d4c
 )
 
 require (
